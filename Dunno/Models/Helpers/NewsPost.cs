@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Http;
 
-namespace Dunno.Models
+namespace Dunno.Models.Helpers
 {
     public class NewsPost : News
     {

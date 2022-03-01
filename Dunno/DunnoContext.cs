@@ -11,5 +11,7 @@ namespace Dunno
         }
 
         public DbSet<News> News { get; set; }
+        public DbSet<Note> Notes { get; set; }
+        public DbSet<Book> Books { get; set; }
     }
 }

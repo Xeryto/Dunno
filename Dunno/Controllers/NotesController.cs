@@ -7,32 +7,32 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Dunno;
 using Dunno.Models;
-using Dunno.Models.Helpers;
 using AutoMapper;
+using Dunno.Models.Helpers;
 using System.IO;
 
 namespace Dunno.Controllers
 {
-    public class NewsController : Controller
+    public class NotesController : Controller
     {
         private readonly DunnoContext _context;
         private readonly MapperConfiguration config = new(cfg => cfg
-        .CreateMap<NewsPost, News>().ForMember("Image", opt => opt.Ignore()));
+        .CreateMap<NotePost, Note>().ForMember("Image", opt => opt.Ignore()));
         private readonly MapperConfiguration editConfig = new(cfg => cfg
-        .CreateMap<News, NewsPost>().ForMember("Image", opt => opt.Ignore()));
+        .CreateMap<Note, NotePost>().ForMember("Image", opt => opt.Ignore()));
 
-        public NewsController(DunnoContext context)
+        public NotesController(DunnoContext context)
         {
             _context = context;
         }
 
-        // GET: News
+        // GET: Notes
         public async Task<IActionResult> Index()
         {
-            return View(await _context.News.ToListAsync());
+            return View(await _context.Notes.ToListAsync());
         }
 
-        // GET: News/Details/5
+        // GET: Notes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -40,48 +40,48 @@ namespace Dunno.Controllers
                 return NotFound();
             }
 
-            var news = await _context.News
+            var note = await _context.Notes
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (news == null)
+            if (note == null)
             {
                 return NotFound();
             }
 
-            return View(news);
+            return View(note);
         }
 
-        // GET: News/Create
+        // GET: Notes/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: News/Create
+        // POST: Notes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,Image")] NewsPost newsPost)
+        public async Task<IActionResult> Create([Bind("Id,Title,Description,Image")] NotePost notePost)
         {
             if (ModelState.IsValid)
             {
                 var mapper = new Mapper(config);
-                var news = mapper.Map<NewsPost, News>(newsPost);
-                if (newsPost.Image != null)
+                var note = mapper.Map<NotePost, Note>(notePost);
+                if (notePost.Image != null)
                 {
                     var stream = new MemoryStream();
-                    await newsPost.Image.CopyToAsync(stream);
-                    news.Image = stream.ToArray();
+                    await notePost.Image.CopyToAsync(stream);
+                    note.Image = stream.ToArray();
                 }
 
-                _context.Add(news);
+                _context.Add(note);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(newsPost);
+            return View(notePost);
         }
 
-        // GET: News/Edit/5
+        // GET: Notes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -89,26 +89,26 @@ namespace Dunno.Controllers
                 return NotFound();
             }
 
-            var news = await _context.News.FindAsync(id);
-            if (news == null)
+            var note = await _context.Notes.FindAsync(id);
+            if (note == null)
             {
                 return NotFound();
             }
 
             var mapper = new Mapper(editConfig);
-            var newsEdit = mapper.Map<News, NewsPost>(news);
+            var noteEdit = mapper.Map<Note, NotePost>(note);
 
-            return View(newsEdit);
+            return View(noteEdit);
         }
 
-        // POST: News/Edit/5
+        // POST: Notes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Image")] NewsPost newsPost)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Image")] NotePost notePost)
         {
-            if (id != newsPost.Id)
+            if (id != notePost.Id)
             {
                 return NotFound();
             }
@@ -116,27 +116,27 @@ namespace Dunno.Controllers
             if (ModelState.IsValid)
             {
                 var mapper = new Mapper(config);
-                var news = mapper.Map<NewsPost, News>(newsPost);
-                if (newsPost.Image != null)
+                var note = mapper.Map<NotePost, Note>(notePost);
+                if (notePost.Image != null)
                 {
                     var stream = new MemoryStream();
-                    await newsPost.Image.CopyToAsync(stream);
-                    news.Image = stream.ToArray();
+                    await notePost.Image.CopyToAsync(stream);
+                    note.Image = stream.ToArray();
                 }
                 else
                 {
-                    var prev = _context.News.AsNoTracking().FirstOrDefault(i => i.Id == id).Image;
-                    news.Image = prev;
+                    var prev = _context.Notes.AsNoTracking().FirstOrDefault(i => i.Id == id).Image;
+                    note.Image = prev;
                 }
 
                 try
                 {
-                    _context.Update(news);
+                    _context.Update(note);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!NewsExists(news.Id))
+                    if (!NoteExists(notePost.Id))
                     {
                         return NotFound();
                     }
@@ -147,10 +147,10 @@ namespace Dunno.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(newsPost);
+            return View(notePost);
         }
 
-        // GET: News/Delete/5
+        // GET: Notes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -158,30 +158,30 @@ namespace Dunno.Controllers
                 return NotFound();
             }
 
-            var news = await _context.News
+            var note = await _context.Notes
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (news == null)
+            if (note == null)
             {
                 return NotFound();
             }
 
-            return View(news);
+            return View(note);
         }
 
-        // POST: News/Delete/5
+        // POST: Notes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var news = await _context.News.FindAsync(id);
-            _context.News.Remove(news);
+            var note = await _context.Notes.FindAsync(id);
+            _context.Notes.Remove(note);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool NewsExists(int id)
+        private bool NoteExists(int id)
         {
-            return _context.News.Any(e => e.Id == id);
+            return _context.Notes.Any(e => e.Id == id);
         }
     }
 }

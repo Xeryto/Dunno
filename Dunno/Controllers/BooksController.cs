@@ -7,32 +7,32 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Dunno;
 using Dunno.Models;
-using Dunno.Models.Helpers;
 using AutoMapper;
+using Dunno.Models.Helpers;
 using System.IO;
 
 namespace Dunno.Controllers
 {
-    public class NewsController : Controller
+    public class BooksController : Controller
     {
         private readonly DunnoContext _context;
         private readonly MapperConfiguration config = new(cfg => cfg
-        .CreateMap<NewsPost, News>().ForMember("Image", opt => opt.Ignore()));
+        .CreateMap<BookPost, Book>().ForMember("Image", opt => opt.Ignore()));
         private readonly MapperConfiguration editConfig = new(cfg => cfg
-        .CreateMap<News, NewsPost>().ForMember("Image", opt => opt.Ignore()));
+        .CreateMap<Book, BookPost>().ForMember("Image", opt => opt.Ignore()));
 
-        public NewsController(DunnoContext context)
+        public BooksController(DunnoContext context)
         {
             _context = context;
         }
 
-        // GET: News
+        // GET: Books
         public async Task<IActionResult> Index()
         {
-            return View(await _context.News.ToListAsync());
+            return View(await _context.Books.ToListAsync());
         }
 
-        // GET: News/Details/5
+        // GET: Books/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -40,48 +40,48 @@ namespace Dunno.Controllers
                 return NotFound();
             }
 
-            var news = await _context.News
+            var book = await _context.Books
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (news == null)
+            if (book == null)
             {
                 return NotFound();
             }
 
-            return View(news);
+            return View(book);
         }
 
-        // GET: News/Create
+        // GET: Books/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: News/Create
+        // POST: Books/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,Image")] NewsPost newsPost)
+        public async Task<IActionResult> Create([Bind("Id,Title,Description,Displacement,Image")] BookPost bookPost)
         {
             if (ModelState.IsValid)
             {
                 var mapper = new Mapper(config);
-                var news = mapper.Map<NewsPost, News>(newsPost);
-                if (newsPost.Image != null)
+                var book = mapper.Map<BookPost, Book>(bookPost);
+                if (bookPost.Image != null)
                 {
                     var stream = new MemoryStream();
-                    await newsPost.Image.CopyToAsync(stream);
-                    news.Image = stream.ToArray();
+                    await bookPost.Image.CopyToAsync(stream);
+                    book.Image = stream.ToArray();
                 }
 
-                _context.Add(news);
+                _context.Add(book);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(newsPost);
+            return View(bookPost);
         }
 
-        // GET: News/Edit/5
+        // GET: Books/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -89,26 +89,26 @@ namespace Dunno.Controllers
                 return NotFound();
             }
 
-            var news = await _context.News.FindAsync(id);
-            if (news == null)
+            var book = await _context.Books.FindAsync(id);
+            if (book == null)
             {
                 return NotFound();
             }
 
             var mapper = new Mapper(editConfig);
-            var newsEdit = mapper.Map<News, NewsPost>(news);
+            var bookEdit = mapper.Map<Book, BookPost>(book);
 
-            return View(newsEdit);
+            return View(bookEdit);
         }
 
-        // POST: News/Edit/5
+        // POST: Books/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Image")] NewsPost newsPost)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Displacement,Image")] BookPost bookPost)
         {
-            if (id != newsPost.Id)
+            if (id != bookPost.Id)
             {
                 return NotFound();
             }
@@ -116,27 +116,27 @@ namespace Dunno.Controllers
             if (ModelState.IsValid)
             {
                 var mapper = new Mapper(config);
-                var news = mapper.Map<NewsPost, News>(newsPost);
-                if (newsPost.Image != null)
+                var book = mapper.Map<BookPost, Book>(bookPost);
+                if (bookPost.Image != null)
                 {
                     var stream = new MemoryStream();
-                    await newsPost.Image.CopyToAsync(stream);
-                    news.Image = stream.ToArray();
+                    await bookPost.Image.CopyToAsync(stream);
+                    book.Image = stream.ToArray();
                 }
                 else
                 {
-                    var prev = _context.News.AsNoTracking().FirstOrDefault(i => i.Id == id).Image;
-                    news.Image = prev;
+                    var prev = _context.Books.AsNoTracking().FirstOrDefault(i => i.Id == id).Image;
+                    book.Image = prev;
                 }
 
                 try
                 {
-                    _context.Update(news);
+                    _context.Update(book);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!NewsExists(news.Id))
+                    if (!BookExists(bookPost.Id))
                     {
                         return NotFound();
                     }
@@ -147,10 +147,10 @@ namespace Dunno.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(newsPost);
+            return View(bookPost);
         }
 
-        // GET: News/Delete/5
+        // GET: Books/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -158,30 +158,30 @@ namespace Dunno.Controllers
                 return NotFound();
             }
 
-            var news = await _context.News
+            var book = await _context.Books
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (news == null)
+            if (book == null)
             {
                 return NotFound();
             }
 
-            return View(news);
+            return View(book);
         }
 
-        // POST: News/Delete/5
+        // POST: Books/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var news = await _context.News.FindAsync(id);
-            _context.News.Remove(news);
+            var book = await _context.Books.FindAsync(id);
+            _context.Books.Remove(book);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool NewsExists(int id)
+        private bool BookExists(int id)
         {
-            return _context.News.Any(e => e.Id == id);
+            return _context.Books.Any(e => e.Id == id);
         }
     }
 }
