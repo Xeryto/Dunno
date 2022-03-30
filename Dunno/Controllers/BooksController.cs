@@ -32,6 +32,13 @@ namespace Dunno.Controllers
             return View(await _context.Books.ToListAsync());
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Index(string searchString)
+        {
+            return View(await _context.Books.Where(i => i.Title.Contains(searchString) || i.Description.Contains(searchString)).ToListAsync());
+        }
+
         // GET: Books/Details/5
         public async Task<IActionResult> Details(int? id)
         {

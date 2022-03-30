@@ -1,48 +1,39 @@
 @model Dunno.Models.Helpers.BookPost
 
-@{
-    ViewData["Title"] = "Edit";
-}
+@{ ViewData["Title"] = "Edit"; }
 
-<h1>Edit</h1>
+<h1>Изменение книги</h1>
 
-<h4>Book</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit" method="post" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Displacement" class="control-label"></label>
-                <input asp-for="Displacement" class="form-control" />
-                <span asp-validation-for="Displacement" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Image" class="control-label"></label>
-                <input asp-for="Image" class="form-control" type="file"/>
-                <span asp-validation-for="Image" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+<form class="form-row" asp-action="Edit" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Id" />
+    <div class="p-1">
+        <label asp-for="Title">Заголовок</label>
+        <input asp-for="Title" class="form-control" id="BooksTitle" maxlength="200" type="text">
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+    <div class="p-1">
+        <label asp-for="Displacement">Местонахождение книги</label>
+        <textarea class="form-control" asp-for="Displacement" rows="1" type="text"></textarea>
+    </div>
+
+    <div class="p-1">
+        <label asp-for="Description">Описание книги</label>
+        <textarea class="form-control" asp-for="Description" rows="5" type="text"></textarea>
+    </div>
+
+    <!--            Добавление файлов-->
+    <div class="container mt-2 mb-2">
+        <div class="p-1">
+            <label class="custom-file-label" asp-for="Image">Обложка:</label>
+            <input accept=".jpg,.gif,.png" class="custom-file-input" asp-for="Image" type="file">
+        </div>
+    </div>
+
+    <div class="p-1">
+        <button class="btn btn-primary" type="submit">Сохранить</button>
+    </div>
+</form>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

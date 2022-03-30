@@ -1,58 +1,47 @@
 @model IEnumerable<Dunno.Models.Book>
 
-@{
-    ViewData["Title"] = "Index";
-}
+@{ ViewData["Title"] = "Index"; }
 
-<h1>Index</h1>
+<h1>Библиотека</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Displacement)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Image)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Displacement)
-            </td>
-            <td>
-                @{ if (item.Image == null)
-                    {
-            <img src="~/img/default-user-icon.jpg" alt="image" /> }
-        else
-        {
-            <img src="data:image; base64,@Convert.ToBase64String(item.Image)" alt="image" /> } }
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="row">
+    <div class="col">
+        <a class="btn btn-primary m-3" href="/Books/Create" role="button">Добавить книгу</a>
+    </div>
+    <div class="col">
+        <form asp-action="Index" method="post">
+            <input class="form-control m-3" placeholder="Поиск по названиям книг и их описаниям"
+                   type="text" name="searchString">
+        </form>
+    </div>
+</div>
+
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 ">
+    @{
+            foreach (var book in Model)
+            {
+                <div class="col">
+        <div class="card">
+            <div class="container">
+                    <div class="px-0">
+                        @{ if (book.Image == null)
+                            {
+                    <img src="https://via.placeholder.com/800x600" alt="Нет изображения этой книги" class="card-img-top" style="object-fit: contain; height: 300px;" /> }
+                else
+                {
+                    <img src="data:image; base64,@Convert.ToBase64String(book.Image)" alt="Нет изображения этой книги" class="card-img-top" style="object-fit: contain; height: 300px;" /> } }
+                    </div>
+            </div>
+            <div class="card-body" style="max-height: 200px; overflow: hidden">
+                <h5 class="card-title">@Html.Display(book.Title)</h5>
+                <p class="card-text">
+                    @book.Description.Substring(0, Math.Min(book.Description.Length, 20)) ...
+                </p>
+                <a class="stretched-link" asp-controller="Books" asp-action="Details" asp-route-id="@book.Id"></a>
+            </div>
+        </div>
+    </div>
+            }
+    }
+</div>
