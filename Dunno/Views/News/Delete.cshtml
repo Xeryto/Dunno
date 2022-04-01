@@ -7,7 +7,7 @@
 <form asp-action="Delete">
     <input type="hidden" asp-for="Id" />
     <div class="col p-1">
-        <button class="btn btn-primary" type="button" href="/Books/Details/@Model.Id">Отменить удаление</button>
+        <a class="btn btn-primary" type="button" asp-action="Details" asp-route-id="@Model.Id">Отменить удаление</a>
     </div>
     <div class="col p-1">
         <button class="btn btn-danger" type="submit">Удалить</button>

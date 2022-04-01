@@ -1,4 +1,13 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿var images = document.getElementsByClassName("imgAdjust");
+var descs = document.getElementsByClassName("descAdjust");
+var titles = document.getElementsByClassName("titleAdjust");
 
-// Write your JavaScript code.
+for (var i = 0; i < images.length; i++) {
+    descs[i].style.height = (images[i].clientHeight - 32 - titles[i].clientHeight).toString() + "px";
+}
+
+window.addEventListener("resize", function (event) {
+    for (var i = 0; i < images.length; i++) {
+        descs[i].style.height = (images[i].clientHeight - 32 - titles[i].clientHeight).toString() + "px";
+    }
+})

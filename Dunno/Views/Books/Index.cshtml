@@ -34,9 +34,9 @@
                     </div>
             </div>
             <div class="card-body" style="max-height: 200px; overflow: hidden">
-                <h5 class="card-title">@Html.Display(book.Title)</h5>
-                <p class="card-text">
-                    @book.Description.Substring(0, Math.Min(book.Description.Length, 20)) ...
+                <h5 class="card-title">@book.Title</h5>
+                <p class="card-text" style="width: 100%; overflow: hidden">
+                    @book.Description
                 </p>
                 <a class="stretched-link" asp-controller="Books" asp-action="Details" asp-route-id="@book.Id"></a>
             </div>
